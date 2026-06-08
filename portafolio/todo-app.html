@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tareas — Ignacio García</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0e0e0e;
+    --white: #f5f2ed;
+    --accent: #c8622a;
+    --muted: #888;
+    --border: rgba(14,14,14,0.12);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 1.5rem;
+  }
+
+  header {
+    width: 100%;
+    max-width: 560px;
+    margin-bottom: 3rem;
+  }
+
+  .back-link {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .header-label::before {
+    content: '';
+    display: inline-block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: 3rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* INPUT */
+  .input-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  #nueva-tarea {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--black);
+  }
+  #nueva-tarea::placeholder { color: var(--muted); }
+
+  .btn-agregar {
+    padding: 1rem 1.5rem;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 18px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .btn-agregar:hover { background: var(--accent); }
+
+  /* FILTROS */
+  .filtros {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filtro-btn {
+    padding: 0.5rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+  .filtro-btn:hover { color: var(--black); }
+  .filtro-btn.activo { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CONTADOR */
+  .contador {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  /* LISTA */
+  #lista-tareas { list-style: none; }
+
+  .tarea {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tarea-check {
+    width: 18px; height: 18px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .tarea-check:hover { border-color: var(--accent); }
+  .tarea-check.completada {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+    font-size: 11px;
+  }
+
+  .tarea-texto {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.5;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .tarea-texto.tachado {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .btn-eliminar {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+    opacity: 0;
+  }
+  .tarea:hover .btn-eliminar { opacity: 1; }
+  .btn-eliminar:hover { color: #c0392b; }
+
+  /* VACÍO */
+  .empty {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .empty-icon {
+    font-family: var(--serif);
+    font-size: 3rem;
+    color: rgba(14,14,14,0.08);
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  /* FOOTER */
+  .app-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .app-footer span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .btn-limpiar {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .btn-limpiar:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="portfolio-ignacio-garcia.html" class="back-link">← Volver al portfolio</a>
+  <div class="header-label">Proyecto 01</div>
+  <h1>Tareas</h1>
+  <p class="subtitle">Organizá tu día, una tarea a la vez.</p>
+</header>
+
+<div class="app">
+  <div class="input-row">
+    <input type="text" id="nueva-tarea" placeholder="Agregar nueva tarea..." maxlength="120" />
+    <button class="btn-agregar" id="btn-agregar" title="Agregar">+</button>
+  </div>
+
+  <div class="filtros">
+    <button class="filtro-btn activo" data-filtro="todas">Todas</button>
+    <button class="filtro-btn" data-filtro="pendientes">Pendientes</button>
+    <button class="filtro-btn" data-filtro="completadas">Completadas</button>
+  </div>
+
+  <p class="contador" id="contador">0 tareas</p>
+
+  <ul id="lista-tareas"></ul>
+
+  <div class="app-footer">
+    <span id="pendientes-count">0 pendientes</span>
+    <button class="btn-limpiar" id="btn-limpiar">Limpiar completadas</button>
+  </div>
+</div>
+
+<script>
+  let tareas = JSON.parse(localStorage.getItem('ig-tareas') || '[]');
+  let filtroActivo = 'todas';
+
+  const input = document.getElementById('nueva-tarea');
+  const lista = document.getElementById('lista-tareas');
+  const contador = document.getElementById('contador');
+  const pendientesCount = document.getElementById('pendientes-count');
+
+  function guardar() {
+    localStorage.setItem('ig-tareas', JSON.stringify(tareas));
+  }
+
+  function renderizar() {
+    const filtradas = tareas.filter(t => {
+      if (filtroActivo === 'pendientes') return !t.completada;
+      if (filtroActivo === 'completadas') return t.completada;
+      return true;
+    });
+
+    const pendientes = tareas.filter(t => !t.completada).length;
+    contador.textContent = `${filtradas.length} tarea${filtradas.length !== 1 ? 's' : ''}`;
+    pendientesCount.textContent = `${pendientes} pendiente${pendientes !== 1 ? 's' : ''}`;
+
+    if (filtradas.length === 0) {
+      lista.innerHTML = `
+        <div class="empty">
+          <span class="empty-icon">✓</span>
+          ${filtroActivo === 'completadas' ? 'Nada completado aún' : filtroActivo === 'pendientes' ? '¡Todo listo!' : 'Agregá tu primera tarea'}
+        </div>`;
+      return;
+    }
+
+    lista.innerHTML = filtradas.map(t => `
+      <li class="tarea" data-id="${t.id}">
+        <div class="tarea-check ${t.completada ? 'completada' : ''}" onclick="toggleTarea('${t.id}')">
+          ${t.completada ? '✓' : ''}
+        </div>
+        <span class="tarea-texto ${t.completada ? 'tachado' : ''}" onclick="toggleTarea('${t.id}')">${t.texto}</span>
+        <button class="btn-eliminar" onclick="eliminarTarea('${t.id}')" title="Eliminar">×</button>
+      </li>
+    `).join('');
+  }
+
+  function agregar() {
+    const texto = input.value.trim();
+    if (!texto) return;
+    tareas.unshift({ id: Date.now().toString(), texto, completada: false });
+    input.value = '';
+    guardar();
+    renderizar();
+  }
+
+  function toggleTarea(id) {
+    tareas = tareas.map(t => t.id === id ? { ...t, completada: !t.completada } : t);
+    guardar();
+    renderizar();
+  }
+
+  function eliminarTarea(id) {
+    tareas = tareas.filter(t => t.id !== id);
+    guardar();
+    renderizar();
+  }
+
+  document.getElementById('btn-agregar').addEventListener('click', agregar);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') agregar(); });
+
+  document.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filtroActivo = btn.dataset.filtro;
+      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      renderizar();
+    });
+  });
+
+  document.getElementById('btn-limpiar').addEventListener('click', () => {
+    tareas = tareas.filter(t => !t.completada);
+    guardar();
+    renderizar();
+  });
+
+  renderizar();
+</script>
+</body>
+</html>

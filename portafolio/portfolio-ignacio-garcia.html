@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ignacio García — Dev</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0e0e0e;
+    --white: #f5f2ed;
+    --accent: #c8622a;
+    --muted: #888;
+    --border: rgba(14,14,14,0.12);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--white); color: var(--black); font-family: var(--mono); font-size: 14px; line-height: 1.7; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 4rem; background: var(--white); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: var(--serif); font-size: 1.1rem; letter-spacing: -0.01em; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--black); }
+  section { padding: 7rem 4rem; }
+  #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 6rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .hero-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .hero-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+  h1 { font-family: var(--serif); font-size: clamp(3.5rem, 8vw, 7rem); line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .hero-desc { max-width: 480px; color: var(--muted); font-size: 13px; line-height: 1.8; margin-bottom: 3rem; }
+  .hero-cta { display: inline-flex; align-items: center; gap: 0.75rem; background: var(--black); color: var(--white); padding: 0.85rem 2rem; text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; transition: background 0.2s, gap 0.2s; }
+  .hero-cta:hover { background: var(--accent); gap: 1.2rem; }
+  .hero-decoration { position: absolute; right: 4rem; bottom: 4rem; font-family: var(--serif); font-size: 18rem; color: rgba(14,14,14,0.04); line-height: 1; user-select: none; pointer-events: none; }
+  .scroll-hint { position: absolute; bottom: 2.5rem; left: 4rem; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+  .scroll-hint::after { content: ''; display: inline-block; width: 1px; height: 40px; background: var(--muted); animation: scrollLine 1.8s ease-in-out infinite; }
+  @keyframes scrollLine { 0%, 100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(0.5); } }
+  #sobre { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; border-bottom: 1px solid var(--border); }
+  .section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+  .section-number { font-family: var(--serif); font-size: 5rem; color: rgba(14,14,14,0.06); line-height: 1; margin-top: 0.5rem; }
+  h2 { font-family: var(--serif); font-size: 2.5rem; letter-spacing: -0.02em; margin-bottom: 1.5rem; line-height: 1.1; }
+  .sobre-text { color: #444; line-height: 1.9; margin-bottom: 2rem; }
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .skill-tag { padding: 0.3rem 0.9rem; border: 1px solid var(--border); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); transition: all 0.2s; cursor: default; }
+  .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+  #proyectos { border-bottom: 1px solid var(--border); }
+  .projects-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .project-card { background: var(--white); padding: 2rem; transition: background 0.2s; cursor: default; }
+  .project-card:hover { background: #eee9e2; }
+  .project-num { font-size: 11px; color: var(--muted); margin-bottom: 1rem; letter-spacing: 0.06em; }
+  .project-title { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 0.75rem; line-height: 1.2; }
+  .project-desc { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .project-tag { padding: 0.2rem 0.6rem; background: rgba(14,14,14,0.06); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .coming-soon { opacity: 0.4; border: 1px dashed var(--border) !important; }
+  .coming-soon:hover { background: var(--white) !important; }
+  #contacto { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .contact-title { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .contact-title em { font-style: italic; color: var(--accent); }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+  .contact-link { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border: 1px solid var(--border); text-decoration: none; color: var(--black); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; transition: all 0.2s; }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); padding-right: 2rem; }
+  .contact-link span { font-size: 18px; }
+  footer { padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 5rem 1.5rem; }
+    #sobre, #contacto { grid-template-columns: 1fr; gap: 2rem; }
+    h1 { font-size: 3rem; }
+    .hero-decoration { display: none; }
+    .scroll-hint { display: none; }
+    .projects-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">IG.</div>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre mí</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-tag">Disponible para trabajar</div>
+  <h1>Ignacio<br><em>García</em></h1>
+  <p class="hero-desc">Desarrollador web en formación. Construyo interfaces limpias y funcionales con HTML, CSS, JavaScript y SQL.</p>
+  <a href="#proyectos" class="hero-cta">Ver proyectos →</a>
+  <div class="hero-decoration">{ }</div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<section id="sobre">
+  <div>
+    <div class="section-label">01 — Sobre mí</div>
+    <div class="section-number">01</div>
+  </div>
+  <div>
+    <h2>Estudiante apasionado por el código</h2>
+    <p class="sobre-text">Soy estudiante de Tecnicatura en Desarrollo de Software, enfocado en el desarrollo web fullstack. Me interesa construir cosas que funcionen bien y se vean mejor todavía.</p>
+    <p class="sobre-text">Actualmente aprendiendo las bases del frontend y backend, con ganas de seguir creciendo en cada proyecto.</p>
+    <div class="skills-grid">
+      <span class="skill-tag">HTML</span>
+      <span class="skill-tag">CSS</span>
+      <span class="skill-tag">JavaScript</span>
+      <span class="skill-tag">SQL</span>
+      <span class="skill-tag">Git</span>
+      <span class="skill-tag">Fullstack</span>
+    </div>
+  </div>
+</section>
+
+<section id="proyectos">
+  <div class="projects-header">
+    <div>
+      <div class="section-label">02 — Proyectos</div>
+      <h2>Lo que estoy<br>construyendo</h2>
+    </div>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card coming-soon">
+      <div class="project-num">001</div>
+      <div class="project-title">Próximamente</div>
+      <p class="project-desc">Mi primer proyecto estará acá pronto.</p>
+      <div class="project-tags">
+        <span class="project-tag">HTML</span>
+        <span class="project-tag">CSS</span>
+        <span class="project-tag">JS</span>
+      </div>
+    </div>
+    <div class="project-card coming-soon">
+      <div class="project-num">002</div>
+      <div class="project-title">En desarrollo</div>
+      <p class="project-desc">Trabajando en algo interesante.</p>
+      <div class="project-tags">
+        <span class="project-tag">JavaScript</span>
+        <span class="project-tag">SQL</span>
+      </div>
+    </div>
+    <div class="project-card coming-soon">
+      <div class="project-num">003</div>
+      <div class="project-title">Coming soon</div>
+      <p class="project-desc">Tercer proyecto en camino.</p>
+      <div class="project-tags">
+        <span class="project-tag">Fullstack</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div>
+    <div class="section-label">03 — Contacto</div>
+    <h2 class="contact-title">¿Tenés un<br>proyecto en<br><em>mente?</em></h2>
+    <p style="color: var(--muted); font-size: 13px; line-height: 1.8;">Estoy abierto a oportunidades freelance y colaboraciones. No dudes en escribirme.</p>
+  </div>
+  <div>
+    <div class="contact-links">
+      <a href="mailto:ignacio@email.com" class="contact-link">
+        <span>✉</span> ignacio@email.com →
+      </a>
+      <a href="https://github.com/" class="contact-link" target="_blank">
+        <span>⌥</span> GitHub →
+      </a>
+      <a href="https://linkedin.com/" class="contact-link" target="_blank">
+        <span>in</span> LinkedIn →
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Ignacio García</p>
+  <p>Desarrollador Web — La Plata, Argentina</p>
+</footer>
+
+</body>
+</html>
